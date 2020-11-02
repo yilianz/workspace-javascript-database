@@ -39,22 +39,21 @@ function saveElement() {
   firebase
     .firestore()
     .collection("shoppinglist")
-    .onSnapshot(function(querySnapshot) {
-      querySnapshot.forEach(function(doc) {
+    .get().then(function(querySnapshot){
+         querySnapshot.forEach(function(doc) {
         console.log(doc.data());
         doc.ref.delete();
       });
-    })
-    .then(function() {
-      var nlist = document.querySelectorAll("li");
-      for (var i = 0; i < nlist.length; i++) {
-        var items = nlist[i].textContent;
-        firebase
-          .firestore()
-          .collection("shoppinglist")
-          .add({
-            item: items
-          });
-      }
     });
+
+  var nlist = document.querySelectorAll("li");
+  for (var i = 0; i < nlist.length; i++) {
+    var items = nlist[i].textContent;
+    firebase
+      .firestore()
+      .collection("shoppinglist")
+      .add({
+        item: items
+      });
+  }
 }
