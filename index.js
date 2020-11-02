@@ -1,5 +1,9 @@
 // Import stylesheets
-import './style.css';
+import "./style.css";
+
+// Import javascript files
+import "./js/add-element.js";
+
 // Firebase App (the core Firebase SDK) is always required and must be listed first
 import * as firebase from "firebase/app";
 
@@ -7,46 +11,50 @@ import * as firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
 
-import * as firebaseui from 'firebaseui';
+import * as firebaseui from "firebaseui";
 
-// Document elements
-const startRsvpButton = document.getElementById('startRsvp');
-const guestbookContainer = document.getElementById('guestbook-container');
-
-const form = document.getElementById('leave-message');
-const input = document.getElementById('message');
-const guestbook = document.getElementById('guestbook');
-const numberAttending = document.getElementById('number-attending');
-const rsvpYes = document.getElementById('rsvp-yes');
-const rsvpNo = document.getElementById('rsvp-no');
-
-var rsvpListener = null;
-var guestbookListener = null;
-
+//  Code for later database connection Please ignore.
 async function main() {
-
   // Add Firebase project configuration object here
-  // var firebaseConfig = {};
-
-  // firebase.initializeApp(firebaseConfig);
-
-  // FirebaseUI config
-  const uiConfig = {
-    credentialHelper: firebaseui.auth.CredentialHelper.NONE,
-    signInOptions: [
-      // Email / Password Provider.
-      firebase.auth.EmailAuthProvider.PROVIDER_ID
-    ],
-    callbacks: {
-      signInSuccessWithAuthResult: function(authResult, redirectUrl) {
-        // Handle sign-in.
-        // Return false to avoid redirect.
-        return false;
-      }
-    }
+  var firebaseConfig = {
+    apiKey: "AIzaSyA2Uacv6L6bwgZki9KuWeajw0avahJ7B04",
+    authDomain: "to-do-list-d6f67.firebaseapp.com",
+    databaseURL: "https://to-do-list-d6f67.firebaseio.com",
+    projectId: "to-do-list-d6f67",
+    storageBucket: "to-do-list-d6f67.appspot.com",
+    messagingSenderId: "868269005971",
+    appId: "1:868269005971:web:0db7aa8694db4c6d7ac166",
+    measurementId: "G-8KK8PPHNRT"
   };
-
-  // const ui = new firebaseui.auth.AuthUI(firebase.auth());
+  firebase.initializeApp(firebaseConfig);
 }
+
 main();
 
+// save
+document.getElementById("save").addEventListener("click", saveElement);
+
+function saveElement() {
+  // Delete all the elements in the colleciton first
+  firebase
+    .firestore()
+    .collection("shoppinglist")
+    .onSnapshot(function(querySnapshot) {
+      querySnapshot.forEach(function(doc) {
+        console.log(doc.data());
+        doc.ref.delete();
+      });
+    })
+    .then(function() {
+      var nlist = document.querySelectorAll("li");
+      for (var i = 0; i < nlist.length; i++) {
+        var items = nlist[i].textContent;
+        firebase
+          .firestore()
+          .collection("shoppinglist")
+          .add({
+            item: items
+          });
+      }
+    });
+}
