@@ -36,24 +36,27 @@ document.getElementById("save").addEventListener("click", saveElement);
 
 function saveElement() {
   // Delete all the elements in the colleciton first
+  console.log("IN the save");
+  var refs = firebase.firestore().collection("shoppinglist");
   firebase
     .firestore()
     .collection("shoppinglist")
-    .get().then(function(querySnapshot){
-         querySnapshot.forEach(function(doc) {
+    .get()
+    .then(function(querySnapshot) {
+      querySnapshot.forEach(function(doc) {
         console.log(doc.data());
         doc.ref.delete();
       });
-    });
 
-  var nlist = document.querySelectorAll("li");
-  for (var i = 0; i < nlist.length; i++) {
-    var items = nlist[i].textContent;
-    firebase
-      .firestore()
-      .collection("shoppinglist")
-      .add({
-        item: items
-      });
-  }
+      var nlist = document.querySelectorAll("li");
+      for (var i = 0; i < nlist.length; i++) {
+        var items = nlist[i].textContent;
+        firebase
+          .firestore()
+          .collection("shoppinglist")
+          .add({
+            item: items
+          });
+      }
+    });
 }
